@@ -11,6 +11,7 @@ public class Events
         bot.addEventListener(new OnChat());
         bot.addEventListener(new OnJoin());
         bot.addEventListener(new OnPing());
+        bot.addEventListener(new AllEvents());
         new OnEnable(bot);
     }
 }

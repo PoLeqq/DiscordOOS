@@ -18,7 +18,7 @@ class GeneralDatabase
     private void createConnection()
     {
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://161.97.78.70:3306/s5464_discordoos", "u5464_woXVI7J3Lq", "00DH+D+g+Hj6FOj0@0Rt!in7");
+            connection = DriverManager.getConnection("jdbc:mysql://161.97.78.70:3306/s5464_discordoos?autoReconnect=true", "u5464_woXVI7J3Lq", "00DH+D+g+Hj6FOj0@0Rt!in7");
         } catch (SQLException e) {
             e.printStackTrace();
             CommandErrorsChannel.logToChannel("Nie można stworzyć połączenia z bazą danych: ",e);

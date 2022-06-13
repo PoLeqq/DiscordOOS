@@ -1,5 +1,7 @@
 package pl.poleq.discordoos.events;
 
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class OnChat extends ListenerAdapter
 {
@@ -26,10 +29,10 @@ public class OnChat extends ListenerAdapter
             return;
 
         DBActivity activity = Odlaczeni.getActivity();
-        int userLvl;
+        int oldUserLvl;
         int newUserLvl;
         try {
-            userLvl = activity.getLvl(event.getAuthor().getId());
+            oldUserLvl = activity.getLvl(event.getAuthor().getId());
             activity.addData(event.getMessage());
             newUserLvl = activity.getLvl(event.getAuthor().getId());
         } catch (SQLException e) {
@@ -38,7 +41,7 @@ public class OnChat extends ListenerAdapter
             return;
         }
 
-        if(userLvl != newUserLvl)
+        if(oldUserLvl != newUserLvl)
         {
             //LVl'upka
             String lvlupMessage = getRandomLvlupMessage();
@@ -57,7 +60,14 @@ public class OnChat extends ListenerAdapter
             }
             if(roleReward == -1)
                 return;
-            event.getGuild().getTextChannelById(973990702159650887L).sendMessage(getRandomRoleRewardMessage()).queue();
+
+            Role role = Odlaczeni.bot.getGuildById(Odlaczeni.SERVERID).getRoleById(roleReward);
+            String rrMessage = getRandomRoleRewardMessage();
+            rrMessage = rrMessage.replaceAll("%user%",event.getAuthor().getAsMention());
+            rrMessage = rrMessage.replaceAll("%role%",role.getName());
+
+            event.getGuild().getTextChannelById(973990702159650887L).sendMessage(rrMessage).queue((message ->
+                message.delete().queueAfter(5, TimeUnit.SECONDS)));
         }
     }
 
