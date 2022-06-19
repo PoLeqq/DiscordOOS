@@ -66,8 +66,8 @@ public class OnChat extends ListenerAdapter
             rrMessage = rrMessage.replaceAll("%user%",event.getAuthor().getAsMention());
             rrMessage = rrMessage.replaceAll("%role%",role.getName());
 
-            event.getGuild().getTextChannelById(973990702159650887L).sendMessage(rrMessage).queue((message ->
-                message.delete().queueAfter(5, TimeUnit.SECONDS)));
+            event.getGuild().getTextChannelById(973990702159650887L).sendMessage(rrMessage).queue();
+            event.getMember().getRoles().add(role);
         }
     }
 

@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,8 @@ import pl.poleq.discordoos.database.DBChannels;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class OnJoin extends ListenerAdapter
 {
@@ -38,20 +41,22 @@ public class OnJoin extends ListenerAdapter
             return;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-
         Guild server = event.getGuild();
-        Member user = event.getMember();
+        Member member = event.getMember();
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Witaj "+user.getNickname()+"!");
+        eb.setTitle("Witaj "+member.getEffectiveName()+"!");
         eb.setDescription("Jesteś naszym **"+server.getMemberCount()+"** członkiem!\n"+
                 "Koniecznie zajrzyj na kanał <#958640706040262672>!\n"+
                 "Aby się zweryfikować, wciśnij reakcje pod wiadomością na kanale <#958640706040262668>");
-        eb.setFooter(sdf.format(new Date()));
-        mc.sendMessageEmbeds(eb.build()).queue();
+        eb.setFooter("Mamy nadzieję, że zostaniesz z nami na dłużej!");
+        User user = member.getUser();
+        eb.setThumbnail(user.getAvatarUrl());
+        System.out.println(user.getAvatarUrl());
+        eb.setColor(0x00ee00);
 
-        mc.sendMessage("<@"+user.getId()+">").queue();//(message) ->
-//                message.delete().queueAfter(1, TimeUnit.SECONDS));
+        mc.sendMessageEmbeds(eb.build()).queue();
+        mc.sendMessage("<@"+member.getId()+">").queue((message) ->
+                message.delete().queueAfter(1, TimeUnit.SECONDS));
     }
 
     public static void setWelcomeChannel(long channelID)

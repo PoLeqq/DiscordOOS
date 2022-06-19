@@ -65,6 +65,7 @@ public class Odlaczeni
         new Events(bot);
 
         LogSystem.defaultLog("Bot Online!");
+        System.out.println("started");
 
         stop();
     }
