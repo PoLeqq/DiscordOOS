@@ -85,7 +85,7 @@ public class DBActivity
     }
 
     /**
-     * Funkcja zwraca wartosc EXP'a wymaganego do osiagniecia danego lvlu
+     * Funkcja zwraca wartosc EXP-a wymaganego do osiagniecia danego lvlu
      * @param lvl lvl
      * @return exp wymagany do lvlup'a
      */
@@ -165,9 +165,8 @@ public class DBActivity
      * <b>False</b> - kiedy nie dodano/zmieniono wartosci (wystapil blad)<br>
      * <b>True</b> - kiedy dodano/zmieniono wartosci (brak jakiegokolwiek bledu)
      * @param message wiadomosc z eventu
-     * @return czy dodano
      */
-    public boolean addData(Message message) throws SQLException
+    public void addData(Message message) throws SQLException
     {
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT id FROM "+TABLE+" WHERE `user`='"+message.getAuthor().getId()+"'");
@@ -178,16 +177,14 @@ public class DBActivity
             addUser(stmt,message);
 
         GeneralDatabase.closeStatement(stmt,"DBActivity.addData(Message message)");
-        return true;
     }
 
     /**
      * Funkcja dodajaca nowy rekord do bazy danych z uzytkownikiem
      * @param stmt statement
      * @param message wiadomosc z eventu
-     * @return czy dodano
      */
-    private boolean addUser(@NotNull Statement stmt, @NotNull Message message) throws SQLException
+    private void addUser(@NotNull Statement stmt, @NotNull Message message) throws SQLException
     {
         int chars = message.getContentStripped().length();
         int exp = getExp(message.getAuthor(),chars) + messageExp;
@@ -195,15 +192,13 @@ public class DBActivity
         stmt.executeUpdate("INSERT INTO "+TABLE+" (`user`,`messages`,`exp`,`all_chars`) VALUES ('"+message.getAuthor().getId()+"', '1', '"+exp+"', '"+message.getContentStripped().length()+"')");
 
         GeneralDatabase.closeStatement(stmt,"DBActivity.addUser(@NotNull Statement stmt, @NotNull Message message)");
-        return true;
     }
 
     /**
      * Funkcja zmieniajaca wartosci przypisanemu uzytkownikowi w bazie
      * @param message wiadomosc z eventu
-     * @return czy zmieniono
      */
-    private boolean updateUser(@NotNull Statement stmt, @NotNull Message message) throws SQLException
+    private void updateUser(@NotNull Statement stmt, @NotNull Message message) throws SQLException
     {
         int messages = getMessages(message.getAuthor().getId())+1;
         int exp = getAllExp(message.getAuthor().getId())+getExp(message.getAuthor(),message.getContentStripped().length()) + messageExp;
@@ -212,7 +207,6 @@ public class DBActivity
         stmt.executeUpdate("UPDATE "+TABLE+" SET `messages` = "+messages+", `exp` = '"+exp+"', `all_chars` = '"+allChars+"' WHERE `user`='"+message.getAuthor().getId()+"'");
 
         GeneralDatabase.closeStatement(stmt,"DBActivity.updateUser(@NotNull Statement stmt, @NotNull Message message)");
-        return true;
     }
 
     /**

@@ -31,9 +31,10 @@ public class Odlaczeni
     private static DBActivity activity;
     private static DBActivityRewards activityRewards;
     private static DBActivityBoosts activityBoosts;
-    private static DBVault vault;
+    private static DBPermissions permissions;
+    //    private static TwitchAPI twitchAPI;
     //    private static DBStreamers streamers;
-//    private static TwitchAPI twitchAPI;
+    private static DBVault vault;
 
     public static void main(String[] args) throws LoginException, InterruptedException, IOException
     {
@@ -56,8 +57,9 @@ public class Odlaczeni
         activity = new DBActivity();
         activityRewards = new DBActivityRewards();
         activityBoosts = new DBActivityBoosts();
+        permissions = new DBPermissions();
 //        streamers = new DBStreamers();
-        vault = new DBVault();
+//        vault = new DBVault();
 //        twitchAPI = new TwitchAPI();
 
         // Komendy, Eventy
@@ -65,7 +67,7 @@ public class Odlaczeni
         new Events(bot);
 
         LogSystem.defaultLog("Bot Online!");
-        System.out.println("started");
+        System.out.println("Server started!");
 
         stop();
     }
@@ -115,5 +117,10 @@ public class Odlaczeni
     public static DBVault getVault()
     {
         return vault;
+    }
+
+    public static DBPermissions getPermissions()
+    {
+        return permissions;
     }
 }

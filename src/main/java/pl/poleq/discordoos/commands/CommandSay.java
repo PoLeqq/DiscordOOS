@@ -3,7 +3,6 @@ package pl.poleq.discordoos.commands;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import pl.poleq.discordoos.Odlaczeni;
 import pl.poleq.discordoos.database.DBChannels;
@@ -11,33 +10,27 @@ import pl.poleq.discordoos.logic.CommandTemplate;
 import pl.poleq.discordoos.system.MessageSystem;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class CommandSay extends ListenerAdapter implements CommandTemplate
+public class CommandSay extends CommandTemplate
 {
-    public final String COMMAND = Odlaczeni.PREFIX + "say";
-    public final String USAGE = Odlaczeni.PREFIX + "say wiadomość`";
-    public final String DESCRIPTION = Odlaczeni.PREFIX + "wysyła zadaną wiadomość (oraz usuwa wiadomość użytkownika)";
-
     public CommandSay()
     {
-        Commands.addCommand(COMMAND,USAGE,DESCRIPTION,true);
+        super("say",new String[]{},"say wiadomość","wysyła zadaną wiadomość (oraz usuwa wiadomość użytkownika)",true);
     }
 
     public void onMessageReceived(@NotNull MessageReceivedEvent event)
     {
-        if(event.getAuthor().isBot())
+        if(!isInGuild(event))
+            return;
+        if(!isCommand(event))
             return;
 
-        String[] args = event.getMessage().getContentRaw().split(" ");
+        String[] args = getArgs(event.getMessage().getContentRaw());
         MessageChannel mc = event.getChannel();
 
-        if(!args[0].equalsIgnoreCase(COMMAND))
-            return;
-
-        if(!Objects.requireNonNull(event.getGuild().getMemberById(event.getAuthor().getId())).hasPermission(Permission.ADMINISTRATOR))
+        if(!canMemberUse(Objects.requireNonNull(event.getMember()),Permission.ADMINISTRATOR))
         {
             event.getChannel().sendMessage(MessageSystem.Errors.NO_PERMISSION).queue((message) ->
                     message.delete().queueAfter(5, TimeUnit.SECONDS));
@@ -60,7 +53,7 @@ public class CommandSay extends ListenerAdapter implements CommandTemplate
             return;
         }
 
-        // Ustawienie kanału (z BD), jezeli jest pusty - wyśilij tam, gdzie została wywołana komenda
+        // Ustawienie kanału (z BD), jezeli jest pusty – wyśilij tam, gdzie została wywołana komenda
         try {
             if(channels.getChannelID(channels.SAY) == 0) {
                 mc.sendMessage(event.getMessage().getContentRaw()).queue();
@@ -75,49 +68,9 @@ public class CommandSay extends ListenerAdapter implements CommandTemplate
 
         if(sayChannel == null)
         {
-            mc.sendMessage(MessageSystem.Errors.NOT_A_CHANNEL).queue();
+            mc.sendMessage(MessageSystem.Errors.CHANNEL_NOT_FOUND).queue();
             return;
         }
         sayChannel.sendMessage(event.getMessage().getContentRaw()).queue();
-    }
-
-    @Override
-    public boolean usage(String[] args) {
-        return false;
-    }
-
-    @Override
-    public boolean args(String[] args) {
-        return false;
-    }
-
-    @Override
-    public boolean perms(String id, String permission) {
-        return false;
-    }
-
-    @Override
-    public boolean isAdminCommand() {
-        return true;
-    }
-
-    @Override
-    public String getUsage() {
-        return USAGE;
-    }
-
-    @Override
-    public String getCommand() {
-        return COMMAND;
-    }
-
-    @Override
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    public List<String> allowedIds() {
-        return null;
     }
 }

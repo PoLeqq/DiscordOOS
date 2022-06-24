@@ -1,5 +1,6 @@
 package pl.poleq.discordoos.system;
 
+@SuppressWarnings("unused")
 public class Color
 {
     // Reset

@@ -30,7 +30,8 @@ public class DBActivityBoosts
         }
     }
 
-    public String getType(long ID) throws SQLException {
+    public String getType(long ID) throws SQLException
+    {
         Statement stmt = connection.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT `type` FROM "+TABLE+" WHERE `dcID`='"+ID+"'");

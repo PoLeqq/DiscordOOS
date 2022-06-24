@@ -26,7 +26,6 @@ public class DBApplications
     public long getLastApplication(String userID) throws SQLException
     {
         Statement stmt = connection.createStatement();
-
         ResultSet rs = stmt.executeQuery("SELECT `date` FROM "+TABLE+" WHERE user='"+userID+"'");
 
         if(!rs.next())
@@ -36,20 +35,10 @@ public class DBApplications
         return rs.getLong(1);
     }
 
-    public boolean insertApplication(String userID,String message) throws SQLException
+    public void insertApplication(String userID, String message) throws SQLException
     {
         Statement stmt = connection.createStatement();
-
-        try {
-            stmt.executeUpdate("INSERT INTO "+TABLE+" (`user`,`date`,`message`) VALUES ('"+userID+"', '"+System.currentTimeMillis()+"', '"+message+"')");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            CommandErrorsChannel.logToChannel("Nie udało się dodać podania użytkownika <@"+userID+">!",e);
-            GeneralDatabase.closeStatement(stmt,"DBActivity.getUserPositionByExp(long userID)");
-            return false;
-        }
-
+        stmt.executeUpdate("INSERT INTO "+TABLE+" (`user`,`date`,`message`) VALUES ('"+userID+"', '"+System.currentTimeMillis()+"', '"+message+"')");
         GeneralDatabase.closeStatement(stmt,"DBActivity.getUserPositionByExp(long userID)");
-        return true;
     }
 }

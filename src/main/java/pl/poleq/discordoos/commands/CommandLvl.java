@@ -1,52 +1,48 @@
 package pl.poleq.discordoos.commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import pl.poleq.discordoos.Odlaczeni;
 import pl.poleq.discordoos.database.DBActivity;
 import pl.poleq.discordoos.logic.CommandTemplate;
+import pl.poleq.discordoos.system.ArgSystem;
 import pl.poleq.discordoos.system.MessageSystem;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class CommandLvl extends ListenerAdapter implements CommandTemplate
+public class CommandLvl extends CommandTemplate
 {
-    private final String COMMAND = Odlaczeni.PREFIX + "lvl";
-    private final String USAGE = Odlaczeni.PREFIX + "lvl` LUB `"+Odlaczeni.PREFIX + "lvl @uzytkownik`";
-    private final String DESCRIPTION = "pokazuje statystyki aktywności";
-
     public CommandLvl()
     {
-        Commands.addCommand(COMMAND,USAGE,DESCRIPTION,false);
+        super("lvl",new String[]{},"lvl` LUB `"+Odlaczeni.PREFIX + "lvl @uzytkownik`","pokazuje statystyki aktywności",false);
     }
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event)
     {
-        if(event.getAuthor().isBot() || event.getAuthor().isSystem())
+        if(!isInGuild(event))
+            return;
+        if(!isCommand(event))
             return;
 
-        String[] args = event.getMessage().getContentRaw().split(" ");
-
-        if(!args[0].equalsIgnoreCase(COMMAND))
-            return;
+        String[] args = getArgs(event.getMessage().getContentRaw());
 
         User user = event.getAuthor();
         EmbedBuilder eb = new EmbedBuilder();
 
-        if(args.length == 1)
+        if(args.length == 0)
         {
             String description;
             try{
                 description = getEmbedTitle(user);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-                CommandErrorsChannel.logToChannel("Nie udało się pobrać wiadomości użytkownika "+user.getId()+":",throwables);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                CommandErrorsChannel.logToChannel("Nie udało się pobrać wiadomości użytkownika "+user.getId()+":",e);
                 return;
             }
 
@@ -54,10 +50,36 @@ public class CommandLvl extends ListenerAdapter implements CommandTemplate
             eb.setTitle("Aktywność");
             eb.setDescription(description);
         }
-        else if(args.length == 2)
+        else if(args.length == 1)
         {
-            event.getChannel().sendMessage(MessageSystem.Errors.NO_PERMISSION).queue((message) ->
-                    message.delete().queueAfter(5, TimeUnit.SECONDS));
+            if(!Objects.requireNonNull(event.getMember()).hasPermission(Permission.MESSAGE_MANAGE))
+            {
+                event.getChannel().sendMessage(MessageSystem.Errors.NO_PERMISSION).queue((message) ->
+                        message.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
+
+            ArgSystem arg = new ArgSystem();
+            User target = arg.getUser(args[0]);
+
+            if(target == null)
+            {
+                event.getChannel().sendMessage(MessageSystem.Errors.USER_NOT_FOUND).queue();
+                return;
+            }
+
+            String description;
+            try{
+                description = getEmbedTitle(target);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                CommandErrorsChannel.logToChannel("Nie udało się pobrać wiadomości użytkownika "+target.getId()+":",e);
+                return;
+            }
+
+            eb.setThumbnail(target.getAvatarUrl());
+            eb.setTitle("Aktywność ("+target.getName()+")");
+            eb.setDescription(description);
         }
 
         event.getChannel().sendMessageEmbeds(eb.build()).queue();
@@ -76,45 +98,5 @@ public class CommandLvl extends ListenerAdapter implements CommandTemplate
         String allExp = "**Exp (łącznie):** "+activity.getAllExp(user.getId())+"\n";
 
         return top+lvl+exp+progress+allExp;
-    }
-
-    @Override
-    public boolean usage(String[] args) {
-        return false;
-    }
-
-    @Override
-    public boolean args(String[] args) {
-        return false;
-    }
-
-    @Override
-    public boolean perms(String id, String permission) {
-        return false;
-    }
-
-    @Override
-    public boolean isAdminCommand() {
-        return false;
-    }
-
-    @Override
-    public String getUsage() {
-        return null;
-    }
-
-    @Override
-    public String getCommand() {
-        return null;
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public List<String> allowedIds() {
-        return null;
     }
 }

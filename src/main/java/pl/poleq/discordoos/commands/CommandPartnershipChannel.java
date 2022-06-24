@@ -1,22 +1,13 @@
 package pl.poleq.discordoos.commands;
 
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
-import pl.poleq.discordoos.Odlaczeni;
-import pl.poleq.discordoos.events.Partnerships;
+import org.jetbrains.annotations.Nullable;
 import pl.poleq.discordoos.logic.CommandTemplate;
-import pl.poleq.discordoos.system.MessageSystem;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class CommandPartnershipChannel extends ListenerAdapter //implements CommandTemplate
+public class CommandPartnershipChannel extends CommandTemplate //implements CommandTemplate
 {
+    public CommandPartnershipChannel(String command, @Nullable String[] aliases, String usage, String description, boolean adminCommand) {
+        super(command, aliases, usage, description, adminCommand);
+    }
 //    private final String COMMAND = Odlaczeni.PREFIX + "pschannel";
 //    private final String USAGE = Odlaczeni.PREFIX + "pschannel <#kanał>`";
 //    private final String DESCRIPTION = "ustawia kanał, na który jest odpowiedzialny za kanał do partnerstw międzyserwerowych";
@@ -79,38 +70,5 @@ public class CommandPartnershipChannel extends ListenerAdapter //implements Comm
 //
 //        Partnerships.setSayChannel(targetChannel);
 //        mc.sendMessage("Zmieniono kanal na <#" + targetChannel.getId()+">!").queue();
-//    }
-//
-//    public String getCommand(){
-//        return COMMAND;
-//    }
-//
-//    @Override
-//    public String getDescription() {
-//        return DESCRIPTION;
-//    }
-//
-//    @Override
-//    public List<String> allowedIds() {
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean usage(String[] args) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean args(String[] args) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean perms(String id, String permission) {
-//        return false;
-//    }
-//
-//    public String getUsage(){
-//        return USAGE;
 //    }
 }

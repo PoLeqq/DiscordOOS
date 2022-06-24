@@ -1,58 +1,142 @@
 package pl.poleq.discordoos.logic;
 
-import java.util.List;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import pl.poleq.discordoos.Odlaczeni;
+import pl.poleq.discordoos.commands.CommandErrorsChannel;
+import pl.poleq.discordoos.commands.Commands;
 
-public interface CommandTemplate
+import javax.annotation.Nullable;
+import java.sql.SQLException;
+import java.util.Arrays;
+
+public abstract class CommandTemplate extends ListenerAdapter
 {
-    /**
-     * Funkcja powinna sprawdzac, czy argumenty zgadzaja sie z wymaganymi. Jezeli nie, zwroci wartosc false.
-     * @param args argumenty komendy
-     * @return poprawnosc argumentow
-     */
-    boolean usage(String[] args);
+    protected final String COMMAND;
+    protected final String[] ALIASES;
+    protected final String USAGE;
+    protected final String DESCRIPTION;
+    protected final boolean ADMIN_COMMAND;
+    protected Permissions requiredPermission;
 
-    /**
-     * Funkcja powinna sprawczac, czy wartosc argumentow zgadzaja sie z poprawnymi. Jezeli nie, zwroci wartosc false.
-     * @param args argumenty komendy
-     * @return poprawnosc wartosci argumentow
-     */
-    boolean args(String[] args);
+    public CommandTemplate(String command, @Nullable String[] aliases, String usage, String description, boolean adminCommand)
+    {
+        // dodanie prefixów do komend
+        COMMAND = Odlaczeni.PREFIX + command;
+        if(aliases != null)
+        {
+            for(int i=0; i<aliases.length; i++)
+            {
+                aliases[i] = Odlaczeni.PREFIX + aliases[i].toLowerCase();
+            }
+            ALIASES = aliases;
+        }
+        else
+            ALIASES = null;
 
-    /**
-     * Funkcja powinna sprawdzac, czy uzytkownik ma odpowiednie uprawnienia do wysylania komendy
-     * @param id id uzytkownika
-     * @param permission nazwa permisji
-     * @return czy uzytnownik ma uprawnienia
-     */
-    boolean perms(String id,String permission);
+        USAGE = Odlaczeni.PREFIX + usage;
+        DESCRIPTION = description;
+        ADMIN_COMMAND = adminCommand;
 
-    /**
-     *
-     * @return czy to komenda administracyjna
-     */
-    boolean isAdminCommand();
+        if(!Commands.getCommands().contains(this))
+            Commands.addCommand(this);
+    }
 
-    /**
-     * Funkcja powinna zwracac uzycie komendy
-     * @return uzycie komendy
-     */
-    String getUsage();
+    public CommandTemplate(String command, @Nullable String[] aliases, String usage, String description, boolean adminCommand, Permissions requiredPermission)
+    {
+        this(command,aliases,usage,description,adminCommand);
 
-    /**
-     * Funkcja powinna zwracac komende, do ktorej klasa jest przypisana
-     * @return komenda
-     */
-    String getCommand();
+        this.requiredPermission = requiredPermission;
+    }
 
-    /**
-     * Funkcja powinna zwracac opis komendy
-     * @return opis komendy
-     */
-    String getDescription();
+    public boolean isCommand(MessageReceivedEvent e)
+    {
+        if(e.getAuthor().isSystem() || e.getAuthor().isBot())
+            return false;
 
-    /**
-     * Funkcja powinna zwracac liste ID uzytkownikow, ktorzy moga uzywac komende
-     * @return lista uprawnionych uzytkownikow
-     */
-    List<String> allowedIds();
+        String[] messageRaw = e.getMessage().getContentRaw().split(" ");
+
+        if(messageRaw[0].equalsIgnoreCase(COMMAND))
+            return true;
+
+        if(ALIASES != null)
+            return Arrays.stream(ALIASES).toList().contains(messageRaw[0]);
+
+        return false;
+    }
+
+    public boolean isInGuild(MessageReceivedEvent e)
+    {
+        try { e.getGuildChannel(); } catch (Exception ex) { return false; }
+        return true;
+    }
+
+    public String getCommand() {
+        return COMMAND;
+    }
+
+    public String[] getAliases() {
+        return ALIASES;
+    }
+
+    public String getUsage() {
+        return USAGE;
+    }
+
+    public String getDescription() {
+        return DESCRIPTION;
+    }
+
+    public boolean isAdminCommand() {
+        return ADMIN_COMMAND;
+    }
+
+    public Permissions getRequiredPermission() {
+        return requiredPermission;
+    }
+
+    public boolean canMemberUse(Member member, @Nullable Permission permission)
+    {
+        if(member.hasPermission(Permission.ADMINISTRATOR))
+            return true;
+
+        if(member.hasPermission(permission))
+            return true;
+
+        if(requiredPermission != null) {
+            try {
+                if(Odlaczeni.getPermissions().hasPermission(member.getId(),Permissions.ALL))
+                    return true;
+                if(Odlaczeni.getPermissions().hasPermission(member.getId(),requiredPermission))
+                    return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                CommandErrorsChannel.logToChannel("Nie udało się pobrać permisji użytkownika!",e);
+            }
+        }
+
+        if(permission != null)
+        {
+            for(Role r : member.getRoles())
+            {
+                if(r.hasPermission(permission))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public String[] getArgs(String message)
+    {
+        String mess = message.trim().replaceAll(" +"," ");
+        if(mess.indexOf(' ') == -1)
+            return new String[]{};
+        mess = mess.substring(mess.indexOf(' ')+1);
+
+        return mess.split(" ");
+    }
 }

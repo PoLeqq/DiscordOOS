@@ -1,9 +1,7 @@
 package pl.poleq.discordoos.commands;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import pl.poleq.discordoos.Odlaczeni;
 import pl.poleq.discordoos.logic.CommandTemplate;
 
 import java.util.ArrayList;
@@ -11,30 +9,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class CommandTemat extends ListenerAdapter implements CommandTemplate
+public class CommandTemat extends CommandTemplate
 {
-    private final String COMMAND = Odlaczeni.PREFIX + "temat";
-    private final String USAGE = Odlaczeni.PREFIX + "temat`";
-    private final String DESCRIPTION = "losuje temat do rozmów";
-
     public CommandTemat()
     {
-        Commands.addCommand(COMMAND,USAGE,DESCRIPTION,false);
+        super("temat",new String[]{},"temat","losuje temat do rozmów",false);
     }
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event)
     {
-        if(event.getAuthor().isBot() || event.getAuthor().isSystem())
+        if(!isInGuild(event))
+            return;
+        if(!isCommand(event))
             return;
 
-        String[] args = event.getMessage().getContentRaw().split(" ");
-
-        if(!args[0].equalsIgnoreCase(COMMAND))
+        String[] args = getArgs(event.getMessage().getContentRaw());
+        if(args.length != 0)
             return;
 
         String message = getRandomMessage();
-
         Objects.requireNonNull(event.getGuild().getTextChannelById(973990702159650887L)).sendMessage(message).queue();
     }
 
@@ -90,45 +84,5 @@ public class CommandTemat extends ListenerAdapter implements CommandTemplate
         int rand = random.nextInt(messages.size());
 
         return messages.get(rand);
-    }
-
-    @Override
-    public boolean usage(String[] args) {
-        return false;
-    }
-
-    @Override
-    public boolean args(String[] args) {
-        return false;
-    }
-
-    @Override
-    public boolean perms(String id, String permission) {
-        return false;
-    }
-
-    @Override
-    public boolean isAdminCommand() {
-        return false;
-    }
-
-    @Override
-    public String getUsage() {
-        return USAGE;
-    }
-
-    @Override
-    public String getCommand() {
-        return COMMAND;
-    }
-
-    @Override
-    public String getDescription() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    public List<String> allowedIds() {
-        return null;
     }
 }

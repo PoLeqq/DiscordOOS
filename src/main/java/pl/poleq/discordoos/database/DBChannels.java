@@ -30,7 +30,6 @@ public class DBChannels
     public long getChannelID(String channelName) throws SQLException
     {
         Statement stmt = connection.createStatement();
-
         ResultSet rs = stmt.executeQuery("SELECT channelID FROM "+TABLE+" WHERE name='"+channelName+"'");
 
         long channelID;
@@ -47,25 +46,19 @@ public class DBChannels
         return channelID;
     }
 
-    public boolean setChannel(String channelName,long channelID) throws SQLException
+    public boolean setChannel(String channelName, long channelID) throws SQLException
     {
         Statement stmt = connection.createStatement();
-
         ResultSet rs = stmt.executeQuery("SELECT id FROM "+TABLE+" WHERE `name`='"+channelName+"'");
 
-        try {
-            if(rs.next())
-                updateChannel(stmt,channelName,channelID);
-            else
-                addChannel(stmt,channelName,channelID);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            GeneralDatabase.closeStatement(stmt,"DBChannel.setChannel(String channelName,long channelID)");
-            return false;
-        }
+        boolean result;
+        if(rs.next())
+            result = updateChannel(stmt, channelName, channelID);
+        else
+            result = addChannel(stmt, channelName, channelID);
 
         GeneralDatabase.closeStatement(stmt,"DBChannel.setChannel(String channelName,long channelID)");
-        return true;
+        return result;
     }
 
     private boolean addChannel(Statement stmt, String channelName,long channelID)

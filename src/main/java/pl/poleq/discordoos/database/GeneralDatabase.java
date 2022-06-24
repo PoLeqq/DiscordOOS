@@ -2,7 +2,6 @@ package pl.poleq.discordoos.database;
 
 import pl.poleq.discordoos.commands.CommandErrorsChannel;
 import pl.poleq.discordoos.system.LogSystem;
-import pl.poleq.discordoos.system.MessageSystem;
 
 import java.sql.*;
 
@@ -63,12 +62,6 @@ class GeneralDatabase
 
     public Connection getConnection() {
         return connection;
-    }
-
-    public boolean exeuteSql(String sql) throws SQLException
-    {
-        Statement stmt = connection.createStatement();
-        return stmt.execute(sql);
     }
 
     /**

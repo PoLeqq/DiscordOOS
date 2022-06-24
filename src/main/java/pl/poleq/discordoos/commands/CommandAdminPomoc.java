@@ -1,6 +1,8 @@
 package pl.poleq.discordoos.commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import pl.poleq.discordoos.logic.CommandTemplate;
@@ -8,33 +10,35 @@ import pl.poleq.discordoos.logic.CommandTemplate;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
-public class CommandPomoc extends CommandTemplate
+public class CommandAdminPomoc extends CommandTemplate
 {
-    public CommandPomoc()
+    public CommandAdminPomoc()
     {
-        super("pomoc",null,"pomoc","komenda zawierająca wszystkie komendy wraz z opisami",false);
+        super("apomoc", null, "apomoc", "komenda zawierająca wszystkie komendy dla admnistratorów wraz z opisami", true);
     }
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event)
     {
+        String[] args = event.getMessage().getContentRaw().split(" ");
+
         if(!isCommand(event))
             return;
 
-        String[] args = event.getMessage().getContentRaw().split(" ");
         if(args.length != 1)
+            return;
+
+        Member member = event.getGuild().retrieveMember(event.getAuthor()).complete();
+        if(!Objects.requireNonNull(member).hasPermission(Permission.ADMINISTRATOR))
             return;
 
         StringBuilder description = new StringBuilder();
 
-        CommandTemplate ap = Commands.getAdminCommands().get(0);
-        description.append("**").append(ap.getCommand()).append("** ");
-        description.append("(`").append(ap.getUsage()).append("`) ");
-        description.append("- ").append(ap.getDescription()).append("\n\n");
         for(int i = 0; i < Commands.getCommands().size(); i++)
         {
-            if(Commands.getAdminCommands().contains(Commands.getCommands().get(i)))
+            if(!Commands.getCommands().contains(Commands.getCommands().get(i)))
                 continue;
 
             CommandTemplate command = Commands.getCommands().get(i);
@@ -53,7 +57,7 @@ public class CommandPomoc extends CommandTemplate
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
         EmbedBuilder embed = new EmbedBuilder();
 
-        embed.setColor(0x00ff00);
+        embed.setColor(0xff0000);
         embed.setTitle("POMOC");
         embed.setDescription(description);
         embed.setThumbnail("https://poleq.addhost.pl/img/bot.gif");
