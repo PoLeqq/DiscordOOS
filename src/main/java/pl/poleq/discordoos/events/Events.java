@@ -12,6 +12,7 @@ public class Events
         bot.addEventListener(new OnJoin());
         bot.addEventListener(new OnPing());
         bot.addEventListener(new AllEvents());
+        bot.addEventListener(new Funfacts());
         new OnEnable(bot);
     }
 }
