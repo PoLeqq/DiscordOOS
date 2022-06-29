@@ -22,11 +22,14 @@ public class CommandAdminPomoc extends CommandTemplate
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event)
     {
-        String[] args = event.getMessage().getContentRaw().split(" ");
-
+        if(!isInGuild(event))
+            return;
         if(!isCommand(event))
             return;
+        if(!canMemberUse(Objects.requireNonNull(event.getMember()),null))
+            return;
 
+        String[] args = getArgs(event.getMessage().getContentRaw());
         if(args.length != 1)
             return;
 
@@ -38,7 +41,7 @@ public class CommandAdminPomoc extends CommandTemplate
 
         for(int i = 0; i < Commands.getCommands().size(); i++)
         {
-            if(!Commands.getCommands().contains(Commands.getCommands().get(i)))
+            if(!Commands.getAdminCommands().contains(Commands.getCommands().get(i)))
                 continue;
 
             CommandTemplate command = Commands.getCommands().get(i);
