@@ -15,6 +15,6 @@ public class AllEvents implements EventListener
             return;
         if(genericEvent instanceof GatewayPingEvent)
             return;
-        System.out.println("Event: " + genericEvent);
+        System.out.println("Event:  " + genericEvent);
     }
 }
