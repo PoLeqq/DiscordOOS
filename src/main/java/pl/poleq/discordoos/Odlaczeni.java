@@ -9,15 +9,11 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import pl.poleq.discordoos.events.Events;
 import pl.poleq.discordoos.system.LogSystem;
-//import pl.poleq.discordoos.twitchapi.TwitchAPI;
 
 import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class Odlaczeni
 {
@@ -58,8 +54,8 @@ public class Odlaczeni
         activityRewards = new DBActivityRewards();
         activityBoosts = new DBActivityBoosts();
         permissions = new DBPermissions();
+        vault = new DBVault();
 //        streamers = new DBStreamers();
-//        vault = new DBVault();
 //        twitchAPI = new TwitchAPI();
 
         // Komendy, Eventy
