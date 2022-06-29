@@ -16,7 +16,7 @@ public class CommandPln extends CommandTemplate
 {
     public CommandPln()
     {
-        super("pln",new String[]{},"pln` LUB `"+Odlaczeni.PREFIX + "pln @uzytkownik`","pokazuje ilość gotówki w portfelu",false);
+        super("pln",new String[]{},"pln` LUB `"+Odlaczeni.PREFIX + "pln @uzytkownik","pokazuje ilość gotówki w portfelu",false);
     }
 
     @Override

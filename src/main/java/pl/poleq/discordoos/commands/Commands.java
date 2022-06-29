@@ -25,12 +25,12 @@ public class Commands
         bot.addEventListener(new CommandDeadChat());
         bot.addEventListener(new CommandErrorsChannel());
         bot.addEventListener(new CommandLvl());
-//        bot.addEventListener(new CommandPartnershipChannel());
         bot.addEventListener(new CommandPln());
         bot.addEventListener(new CommandPomoc());
         bot.addEventListener(new CommandRealizator());
         bot.addEventListener(new CommandSay());
         bot.addEventListener(new CommandSayChannel());
+        bot.addEventListener(new CommandPartnershipChannel());
         bot.addEventListener(new CommandTemat());
         bot.addEventListener(new CommandTopLvl());
         bot.addEventListener(new CommandWelcomeChannel());

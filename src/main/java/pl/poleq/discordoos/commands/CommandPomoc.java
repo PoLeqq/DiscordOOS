@@ -28,10 +28,20 @@ public class CommandPomoc extends CommandTemplate
 
         StringBuilder description = new StringBuilder();
 
-        CommandTemplate ap = Commands.getAdminCommands().get(0);
-        description.append("**").append(ap.getCommand()).append("** ");
-        description.append("(`").append(ap.getUsage()).append("`) ");
-        description.append("- ").append(ap.getDescription()).append("\n\n");
+        // Dodanie komendy AdminPomoc
+        {
+            CommandTemplate ap = Commands.getAdminCommands().get(0);
+            description.append("**").append(ap.getCommand()).append("** ");
+            description.append("(`").append(ap.getUsage()).append("`) ");
+            description.append("- ").append(ap.getDescription()).append("\n\n");
+            description.append("Aliasy: `");
+            if(ap.getAliases() == null)
+                description.append("[]");
+            else
+                description.append(Arrays.toString(ap.getAliases()));
+            description.append("`\n\n");
+        }
+
         for(int i = 0; i < Commands.getCommands().size(); i++)
         {
             if(Commands.getAdminCommands().contains(Commands.getCommands().get(i)))

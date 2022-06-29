@@ -29,7 +29,7 @@ public class CommandTemat extends CommandTemplate
             return;
 
         String message = getRandomMessage();
-        Objects.requireNonNull(event.getGuild().getTextChannelById(973990702159650887L)).sendMessage(message).queue();
+        event.getChannel().sendMessage(message).queue();
     }
 
     private String getRandomMessage()

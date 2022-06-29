@@ -19,7 +19,7 @@ public class CommandSayChannel extends CommandTemplate
 {
     public CommandSayChannel()
     {
-        super("saychannel",new String[]{},"saychannel <#kanał>` LUB `;saychannel null`","ustawia kanał, na który ma zostać wysłana wiadomość",true);
+        super("saychannel",new String[]{},"saychannel <#kanał>` LUB `;saychannel null","ustawia kanał, na który ma zostać wysłana wiadomość",true);
     }
 
     @Override

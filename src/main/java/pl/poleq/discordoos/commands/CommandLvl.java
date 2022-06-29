@@ -19,7 +19,7 @@ public class CommandLvl extends CommandTemplate
 {
     public CommandLvl()
     {
-        super("lvl",new String[]{},"lvl` LUB `"+Odlaczeni.PREFIX + "lvl @uzytkownik`","pokazuje statystyki aktywności",false);
+        super("lvl",new String[]{},"lvl` LUB `"+Odlaczeni.PREFIX + "lvl @uzytkownik","pokazuje statystyki aktywności",false);
     }
 
     @Override
