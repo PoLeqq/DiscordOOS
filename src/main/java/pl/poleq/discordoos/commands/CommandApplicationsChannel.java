@@ -19,6 +19,7 @@ public class CommandApplicationsChannel extends CommandTemplate
     {
         super("applicationschannel",new String[]{"apchannel"},"applicationschannel <#kanał>","ustawia kanał, który jest odpowiedzialny za kanał do składania podań",true);
     }
+
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event)
     {
