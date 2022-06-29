@@ -34,6 +34,7 @@ public class Commands
         bot.addEventListener(new CommandTemat());
         bot.addEventListener(new CommandTopLvl());
         bot.addEventListener(new CommandWelcomeChannel());
+//        bot.addEventListener(new CommandTest());
     }
 
     /**
