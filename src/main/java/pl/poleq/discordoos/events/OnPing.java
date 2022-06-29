@@ -14,7 +14,8 @@ public class OnPing extends ListenerAdapter
         if(!event.getMessage().getContentRaw().equals("<@782346460934176809>"))
             return;
 
-        event.getChannel().sendMessage("Witaj "+event.getAuthor().getAsMention() +"! Aby poznać wszystkie komendy, wpisz `;pomoc`")
+        event.getChannel().sendMessage("Witaj "+event.getAuthor().getAsMention() +"! Aby poznać wszystkie komendy, wpisz `;pomoc`\n"+
+                "||*jeżeli chcesz się poczuć jakbyś nie miał/miała internetu, zagraj tutaj :)* https://trex-runner.com/||")
                 .queue((message) -> message.delete().queueAfter(10, TimeUnit.SECONDS));
     }
 }
