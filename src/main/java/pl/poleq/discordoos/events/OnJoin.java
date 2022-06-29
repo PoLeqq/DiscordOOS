@@ -13,9 +13,6 @@ import pl.poleq.discordoos.commands.CommandErrorsChannel;
 import pl.poleq.discordoos.database.DBChannels;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class OnJoin extends ListenerAdapter
