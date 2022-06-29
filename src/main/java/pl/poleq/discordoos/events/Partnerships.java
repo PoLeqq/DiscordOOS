@@ -40,7 +40,6 @@ public class Partnerships extends ListenerAdapter
 
         if(!event.getChannel().getId().equals(partnershipsChannel.getId()))
             return;
-
 //        Txtconfiguration prod = new Txtconfiguration(Odlaczeni.getProducers().getFile());
 //        String part = prod.getString(event.getAuthor().getId());
 //        if(part == null)
