@@ -32,9 +32,4 @@ public class OnEnable
 
         channel.sendMessageEmbeds(embed.build()).queue();
     }
-
-    private void checkIfStreaming()
-    {
-
-    }
 }
