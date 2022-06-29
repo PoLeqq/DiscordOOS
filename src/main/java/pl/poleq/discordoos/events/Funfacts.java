@@ -12,6 +12,10 @@ public class Funfacts extends ListenerAdapter
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event)
     {
+        try{
+            event.getGuildChannel();
+        } catch (Exception ingore) { return; }
+
         if(!event.getGuildChannel().getId().equals("986267753323307038"))
             return;
 
