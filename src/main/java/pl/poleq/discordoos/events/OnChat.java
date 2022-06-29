@@ -29,8 +29,7 @@ public class OnChat extends ListenerAdapter
             return;
 
         DBActivity activity = Odlaczeni.getActivity();
-        int oldUserLvl;
-        int newUserLvl;
+        int oldUserLvl, newUserLvl;
         try {
             oldUserLvl = activity.getLvl(event.getAuthor().getId());
             activity.addData(event.getMessage());
