@@ -1,5 +1,6 @@
 package pl.poleq.discordoos.events;
 
+import net.dv8tion.jda.api.events.GatewayPingEvent;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
@@ -11,6 +12,8 @@ public class AllEvents implements EventListener
     public void onEvent(@NotNull GenericEvent genericEvent)
     {
         if(genericEvent instanceof MessageReceivedEvent)
+            return;
+        if(genericEvent instanceof GatewayPingEvent)
             return;
         System.out.println("Event: " + genericEvent);
     }
